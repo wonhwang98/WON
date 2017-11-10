@@ -15,12 +15,16 @@ library SafeMath {
  }
  
  
- contract Ownable() {
+contract Ownable {
+     
+     address public owner;
+     
+  function Ownable() {
   owner = msg.sender;
   }
   
   
-  modifier onlyOnwer() {
+  modifier onlyOwner() {
     require(msg.sender == owner);
     _;
    }
@@ -46,8 +50,8 @@ library SafeMath {
     
     uint256 public constant RATE = 2000;
     uint256 public constant CAP = 15000;
-    uint256 public constant START = FILLTHIS;
-    uint256 public constant = 7;
+    uint256 public constant START = 1510305935;
+    uint256 public constant DAYS = 7;
  
     bool public initialized = false;
     uint256 public raisedAmount = 0;
@@ -68,7 +72,7 @@ library SafeMath {
     }
     
     //allocate WONCOIN token to the contract address. Pass in the number of tokens 
-    function initialize(unit256 numTokens) onlyOwner {
+    function initialize(uint256 numTokens) onlyOwner {
       require(initialized == false);
       require(tokensAvailable() == numTokens);
       initialized = true;
@@ -101,21 +105,22 @@ library SafeMath {
     
     raisedAmount = raisedAmount.add(msg.value);
     
-    token.transger(msg.sender, tokens);
+    token.transfer(msg.sender, tokens);
     
     owner.transfer(msg.value);
     }
     
-    function tokensAvailable() constant returns (unit256) {
+    function tokensAvailable() constant returns (uint256) {
       return token.balanceOf(this);
     }
     
     function destroy() onlyOwner {
-    uint256 balace = token.balanceOf(this);
+    uint256 balance = token.balanceOf(this);
     assert(balance > 0);
     token.transfer(owner, balance);
     selfdestruct(owner);
     }
+ }
     
     
     
