@@ -1,0 +1,146 @@
+pragma solidity ^0.4.15;
+
+library SafeMath {
+  function mul(uint256 a, uint256 b) internal constant returns (uint256) {
+    uint256 c = a * b;
+    assert(a == 0 || c / a == b);
+    return c;
+  }
+  
+  function add(uint256 a, uint256 b) internal constant returns (uint256) {
+    uint256 c = a + b;
+    assert(c >= a);
+    return c;
+  }
+ }
+ 
+ 
+ contract Ownable() {
+  owner = msg.sender;
+  }
+  
+  
+  modifier onlyOnwer() {
+    require(msg.sender == owner);
+    _;
+   }
+  
+  
+  function transferOwnership(address newOwner) onlyOwner {
+    require(newOwner != address(0));
+    owner = newOwner;
+   }
+ }
+ 
+ 
+ interface Token {
+  function transfer(address _to, uint256 _value) returns (bool);
+  function balanceOf(address _owner) constant returns (uint256 balance);
+ }
+ 
+ contract Crowdsale is Ownable {
+  
+    using SafeMath for uint256;
+    
+    Token token;
+    
+    uint256 public constant RATE = 2000;
+    uint256 public constant CAP = 15000;
+    uint256 public constant START = FILLTHIS;
+    uint256 public constant = 7;
+ 
+    bool public initialized = false;
+    uint256 public raisedAmount = 0;
+    
+    event BoughtTokens(address indexed to, uint256 value);
+    
+    modifier whenSaleIsActive() {
+      
+       assert(isActive());
+       
+     _;
+    }
+    
+    //pass in WONCOIN's contract address 
+    function Crowdsale(address _tokenAddr) {
+      require(_tokenAddr !=0);
+      token = Token(_tokenAddr);
+    }
+    
+    //allocate WONCOIN token to the contract address. Pass in the number of tokens 
+    function initialize(unit256 numTokens) onlyOwner {
+      require(initialized == false);
+      require(tokensAvailable() == numTokens);
+      initialized = true;
+     }
+    
+    function isActive() constant returns (bool) {
+      return (
+          initialized == true &&
+          now >= START &&
+          now <= START.add(DAYS * 1 days) &&
+          goalReached() == false
+      );
+    }
+    
+    function goalReached() constant returns (bool) {
+      return (raisedAmount >= CAP * 1 ether);
+    }
+    
+    function () payable {
+      buyTokens();
+     }
+      
+     
+    function buyTokens() payable whenSaleIsActive {
+    
+    uint256 weiAmount = msg.value;
+    uint256 tokens = weiAmount.mul(RATE);
+    
+    BoughtTokens(msg.sender, tokens);
+    
+    raisedAmount = raisedAmount.add(msg.value);
+    
+    token.transger(msg.sender, tokens);
+    
+    owner.transfer(msg.value);
+    }
+    
+    function tokensAvailable() constant returns (unit256) {
+      return token.balanceOf(this);
+    }
+    
+    function destroy() onlyOwner {
+    uint256 balace = token.balanceOf(this);
+    assert(balance > 0);
+    token.transfer(owner, balance);
+    selfdestruct(owner);
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+       
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
